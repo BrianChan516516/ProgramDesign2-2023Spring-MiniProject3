@@ -17,35 +17,16 @@
  * @return int
  */
 // getPieceScore
-int getPieceScore(int player, Board *board){
-    int score = 0;
-    for (int i=0; i<BOARD_H; i++) {
-        for (int j=0; j<BOARD_W; j++) {
-            switch (board->board[player][i][j]){
-                case 1: // Pawn
-                    score += 2;
-                    break;
-                case 2: // Rook
-                    score += 6;
-                    break;
-                case 3: // Knight
-                    score += 7;
-                    break;
-                case 4: // Bishop
-                    score += 8;
-                    break;
-                case 5: // Queen
-                    score += 20;
-                    break;
-                case 6: // King
-                    score += 1000;
-                    break;
-                default:
-                    break;
-            }
-         }
+inline int getPieceScore(int piece) {
+    switch (piece) {
+        case 1: return 2;       // Pawn
+        case 2: return 10;      // Rook
+        case 3: return 8;       // Knight
+        case 4: return 7;       // Bishop
+        case 5: return 30;      // Queen
+        case 6: return 1000;    // King
+        default: return 0;
     }
-    return score;
 }
 
 // getPieceNumber
@@ -67,38 +48,33 @@ int getChildNumber(State *state){
     return (legal_actions.size());
 }
 
-int State::evaluate(){
-    // [TODO] design your own evaluation function
-    //return (rand() % 100);
-
-    int player = 0;
+int State::evaluate() {
+    int player = (MAX_DEPTH % 2) == 0 ? 1 - this->player : this->player;
+    int opponent = 1 - player;
+    
     int player_score = 0;
-    int oppner_score = 0;
-
-
-    // // alwaus from the current player's view instead of oppner(opponent)
-    if ((MAX_DEPTH % 2) == 0)
-        player = 1-this->player;
-    else
-        player = this->player;
-
-    player_score += getPieceScore(player, &(this->board));
-    oppner_score += getPieceScore((1-player), &(this->board));
-    //std::cout << "evaluate::player=" << player << " score=" << player_score << std::endl;
-    //std::cout << "evaluate::oppner=" << (1-player) << " score=" << oppner_score << std::endl;
-
-    player_score += getPieceNumber(player, &(this->board));
-    oppner_score += getPieceNumber((1-player), &(this->board));
-    //std::cout << "getPieceNumber::player=" << player << " score=" << player_score << std::endl;
-    //std::cout << "getPieceNumber::oppner=" << (1-player) << " score=" << oppner_score << std::endl;
-
-    //player_score += getChildNumber(this);
-    //std::cout << "getChildNumber::player=" << player << " score=" << player_score << std::endl;
-    //std::cout << "getChildNumber::oppner=" << (1-player) << " score=" << oppner_score << std::endl;
-
-    return (player_score-oppner_score);
+    int opponent_score = 0;
+    int piece_count = 0;
+    
+    for (int i = 0; i < BOARD_H; ++i) {
+        for (int j = 0; j < BOARD_W; ++j) {
+            int piece = this->board.board[player][i][j];
+            if (piece) {
+                player_score += getPieceScore(piece);
+                piece_count++;
+            }
+            
+            piece = this->board.board[opponent][i][j];
+            if (piece) {
+                opponent_score += getPieceScore(piece);
+            }
+        }
+    }
+    
+    player_score += piece_count;
+    
+    return (player_score - opponent_score);
 }
-
 /**
  * @brief return next state after the move
  *
