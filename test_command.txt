@@ -1,0 +1,36 @@
+
+===>minimax VS random, baseline1, baseline2
+t1==>
+./main ./player_minimax ./player_random
+run 1: 
+run 2: 
+t2==>
+./main ./player_minimax ./baseline1
+run 1: 
+run 2: 
+t3==>
+./main ./player_minimax ./baseline2
+run 1: 
+run 2: 
+
+===>alphabeta VS random, baseline1, baseline2
+t4==>
+./main ./player_alphabeta ./player_random
+run 1: 
+run 2: 
+t5==>
+./main ./player_alphabeta ./baseline1
+run 1: 
+run 2:  
+t6==>
+./main ./player_alphabeta ./baseline2
+run 1: 
+run 2: 
+
+==============================================>
+
+https://brew.sh/index_zh-tw
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+For timeout installation:
+brew install coreutils
